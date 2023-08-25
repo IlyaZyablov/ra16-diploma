@@ -179,11 +179,24 @@ section {
 
 .catalog-item-card {
   margin-bottom: 1em;
+  min-height: 650px;
+  align-content: space-between;
+}
+
+.catalog-item-card img {
+  max-height: 450px;
+}
+
+.catalog-item-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }
 
 .catalog-item-size {
   display: inline-block;
   padding: 0 10px;
+  margin-left: 5px;
 }
 
 .catalog-item-size.selected {
