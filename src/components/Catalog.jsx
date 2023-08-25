@@ -3,7 +3,7 @@ import Item from "./Item";
 import { useDispatch, useSelector } from "react-redux";
 import { initItems, loadItems, setSearchParams } from "../store/itemsSlice";
 import Categories from "./Categories";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useJsonFetch from "../hooks/useJsonFetch";
 import Preloader from "./Preloader";
 import iziToast from 'izitoast';
@@ -27,10 +27,13 @@ function Catalog() {
   const [localState, setLocalState] = useState({
     selected: 0, offset: 6, loading: false, isLoadButtonDisable: false, loadingAnotherItems: false
   });
+  const ref = useRef(null);
 
   async function onSelectCategory(evt = null) {
     setLocalState({ ...localState, loading: true });
+
     dispatch(setSearchParams(''));
+    ref.current.reset();
 
     let dataID = 0;
     if (evt !== null) {
@@ -136,10 +139,6 @@ function Catalog() {
       });
       setLocalState({ ...localState, loading: false, offset: 6 });
     }
-    console.log('result');
-    console.log(result);
-    console.log('handleCatalogForm');
-    console.log(evt.target.value);
   }
 
   return (
@@ -147,7 +146,7 @@ function Catalog() {
       <h2 className="text-center">Каталог</h2>
 
       {location.pathname === '/catalog' &&
-        <form className="catalog-search-form form-inline" onSubmit={handleCatalogForm}>
+        <form className="catalog-search-form form-inline" ref={ref} onSubmit={handleCatalogForm}>
           {searchParams.length > 0 ? (
             <input className="form-control" placeholder="Поиск" defaultValue={searchParams} onFocus={handleCatalogForm} onInput={handleCatalogForm} autoFocus />
           ) : (
