@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './assets/css/style.css';
-import '../node_modules/izitoast/dist/css/izitoast.min.css';
-import '../node_modules/izitoast/dist/js/izitoast.min.js';
+import './assets/css/izitoast.min.css';
 
 // store
 import { store } from './store';

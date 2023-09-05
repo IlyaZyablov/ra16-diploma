@@ -1,22 +1,8 @@
 import { Link } from "react-router-dom";
-import { removeItem, updateTotalPrice } from "../store/cartSlice";
-import { useDispatch } from "react-redux";
-import iziToast from "izitoast";
 
 function CartItem(data) {
   const { index, id, title, size, count, price } = data.cartItemData;
-  const dispatch = useDispatch();
-
-  const handleDeleteItem = evt => {
-    dispatch(removeItem(parseInt(evt.target.dataset.id, 10)));
-
-    dispatch(updateTotalPrice());
-
-    iziToast.success({
-      message: 'Товар успешно удалён из корзины!',
-      position: 'bottomCenter',
-    });
-  }
+  const { handleDeleteItem } = data;
 
   return (
     <tr>

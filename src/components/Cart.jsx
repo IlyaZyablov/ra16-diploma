@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "./CartItem";
 import iziToast from "izitoast";
-import { setItemsList } from "../store/cartSlice";
+import { setItemsList, removeItem, updateTotalPrice } from "../store/cartSlice";
+import useFetchData from "../hooks/useFetchData";
 
 function Cart() {
   const cardInlineStyle = {
@@ -10,7 +11,19 @@ function Cart() {
   };
 
   const cartItems = useSelector(state => state.cart);
+  const { checkoutDB } = useFetchData();
   const dispatch = useDispatch();
+
+  const handleDeleteItem = evt => {
+    dispatch(removeItem(parseInt(evt.target.dataset.id, 10)));
+
+    dispatch(updateTotalPrice());
+
+    iziToast.success({
+      message: 'Товар успешно удалён из корзины!',
+      position: 'bottomCenter',
+    });
+  }
 
   const onFormSubmit = async evt => {
     evt.preventDefault();
@@ -50,34 +63,25 @@ function Cart() {
       items: cartItems.list.map(({ id, price, count }) => ({ id, price, count })),
     };
 
-    let error = false;
-    const result = await fetch(`${import.meta.env.VITE_MAIN_URL}/order`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.ok)
-      .catch(err => {
-        console.error(err);
-        error = true;
+    checkoutDB.postInfo(data)
+      .then(result => {
+        if (result) {
+          iziToast.success({
+            message: 'Ваш заказ успешно оформлен!',
+            position: 'bottomCenter',
+          });
+          evt.target.reset();
+    
+          dispatch(setItemsList([]));
+        }
+      })
+      .catch((er) => {
+        console.log(er);
+        iziToast.error({
+          message: 'Произошла ошибка при оформлении заказа! Повторите попытку позже.',
+          position: 'bottomCenter',
+        });
       });
-
-    if (!error && result === true) {
-      iziToast.success({
-        message: 'Ваш заказ успешно оформлен!',
-        position: 'bottomCenter',
-      });
-      evt.target.reset();
-
-      dispatch(setItemsList([]));
-    } else {
-      iziToast.error({
-        message: 'Произошла ошибка при оформлении заказа! Повторите попытку позже.',
-        position: 'bottomCenter',
-      });
-    }
   }
 
   return (
@@ -101,7 +105,7 @@ function Cart() {
               <tbody>
                 {cartItems.list.length > 0 &&
                   cartItems.list.map((elem, i) =>
-                    <CartItem key={elem.id} cartItemData={{...elem, index: i + 1}} />
+                    <CartItem key={elem.id} cartItemData={{ ...elem, index: i + 1 }} handleDeleteItem={handleDeleteItem} />
                   )
                 }
                 {cartItems.list.length > 0 ? (

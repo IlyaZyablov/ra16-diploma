@@ -1,28 +1,31 @@
 import PropTypes from 'prop-types';
+import { Link, useLocation } from 'react-router-dom';
 
 function Categories({ list, selected, onSelect }) {
+  const location = useLocation();
+
   return (
     <ul className="catalog-categories nav justify-content-center">
       <li className="nav-item">
-          <a
+          <Link
             data-id={0}
             className={`nav-link${selected === 0 ? ' active' : ''}`}
-            href="#!"
+            to={location.pathname}
             onClick={onSelect}
           >
             Все
-          </a>
+          </Link>
         </li>
       {list.map(elem =>
         <li className="nav-item" key={elem.id}>
-          <a
+          <Link
             data-id={elem.id}
             className={`nav-link${selected === elem.id ? ' active' : ''}`}
-            href="#!"
+            to={location.pathname}
             onClick={onSelect}
           >
             {elem.title}
-          </a>
+          </Link>
         </li>
       )}
     </ul>

@@ -1,6 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = { list: [], categories: [], topSales: [], searchParams: '' };
+const initialState = {
+  list: [],
+  categories: [],
+  topSales: [],
+  searchParams: '',
+  catalogItem: {
+    selectedCount: 1,
+    selectedSize: '0 US',
+    statusSelect: false,
+  },
+};
 
 const itemsSlice = createSlice({
   name: 'items',
@@ -20,9 +30,15 @@ const itemsSlice = createSlice({
     },
     setSearchParams(state, action) {
       state.searchParams = action.payload;
+    },
+    setCatalogItem(state, action) {
+      state.catalogItem = { ...state.catalogItem, ...action.payload};
     }
   },
 });
 
-export const { initItems, initCategories, loadTopSales, loadItems, setSearchParams } = itemsSlice.actions;
+export const {
+  initItems, initCategories, loadTopSales, loadItems, setSearchParams, setCatalogItem,
+} = itemsSlice.actions;
+
 export default itemsSlice.reducer;
